@@ -8,6 +8,9 @@
     "hono": "^3.2.2"
   },
   "devDependencies": {
+    "@tsconfig/node-lts": "^18.12.2",
+    "@types/node": "^20.2.3",
+    "dotenv": "^16.0.3",
     "tsx": "^3.12.2"
   }
 }
