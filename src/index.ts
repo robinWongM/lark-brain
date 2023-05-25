@@ -32,7 +32,6 @@ dispatcher.register({
 
 app.post('/events', async (c) => {
   const body = await c.req.json()
-  console.log('?')
 
   const data = Object.assign(Object.create({
     headers: Object.fromEntries(c.req.headers.entries()),
@@ -47,7 +46,8 @@ app.post('/events', async (c) => {
   }
 
   void dispatcher.invoke(data);
-  c.json({});
+  c.status(200);
+  c.json({ code: 0 });
 })
 
 serve(app)
