@@ -10,15 +10,12 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.22.0
     version: 2.22.0
-  hnswlib-node:
-    specifier: ^1.4.2
-    version: 1.4.2
   hono:
     specifier: ^3.2.2
     version: 3.2.2
   langchain:
     specifier: ^0.0.82
-    version: 0.0.82(@supabase/supabase-js@2.22.0)(hnswlib-node@1.4.2)
+    version: 0.0.82(@supabase/supabase-js@2.22.0)
 
 devDependencies:
   '@tsconfig/node-lts':
@@ -403,12 +400,6 @@ packages:
     resolution: {integrity: sha512-nbE1WxOTTrUWIfsfZ4aHGYu5DOuNkbxGokjV6Z2kxfJK3uaAb8zNK1muzOeipoLHZjInT4Br88BHpzevc681xA==}
     dev: false
 
-  /bindings@1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-    dependencies:
-      file-uri-to-path: 1.0.0
-    dev: false
-
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
     dev: true
@@ -533,10 +524,6 @@ packages:
       type: 2.7.2
     dev: false
 
-  /file-uri-to-path@1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
-    dev: false
-
   /flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
@@ -573,14 +560,6 @@ packages:
     resolution: {integrity: sha512-MjhiaIWCJ1sAU4pIQ5i5OfOuHHxVo1oYeNsWTON7jxYkod8pHocXeh+SSbmu5OZZZK73B6cbJ2XADzXehLyovQ==}
     dev: true
 
-  /hnswlib-node@1.4.2:
-    resolution: {integrity: sha512-76PIzOaNcX8kOpKwlFPl07uelpctqDMzbiC+Qsk2JWNVkzeU/6iXRk4tfE9z3DoK1RCBrOaFXmQ6RFb1BVF9LA==}
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
-      node-addon-api: 6.1.0
-    dev: false
-
   /hono@3.2.2:
     resolution: {integrity: sha512-yVkYyefATYGz6j7iDcugtEvg4AgpccE1tDYnmvTmXDR4NQrUJ3/SdHU9V7UuWQjGtfrBujeBUAq70oc82ADsvA==}
     engines: {node: '>=16.0.0'}
@@ -605,7 +584,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /langchain@0.0.82(@supabase/supabase-js@2.22.0)(hnswlib-node@1.4.2):
+  /langchain@0.0.82(@supabase/supabase-js@2.22.0):
     resolution: {integrity: sha512-tRIfr7ktPHgB2IZBE5/dr6ExCnFv9CrF8+WhQH3rfpI9VBzMs8xAgyB4o4u5bYFVw8AKfd6e7Uj+LdYHS+Dlrg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -737,7 +716,6 @@ packages:
       binary-extensions: 2.2.0
       expr-eval: 2.0.2
       flat: 5.0.2
-      hnswlib-node: 1.4.2
       js-tiktoken: 1.0.6
       jsonpointer: 5.0.1
       ml-distance: 4.0.0
@@ -823,10 +801,6 @@ packages:
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
-    dev: false
-
-  /node-addon-api@6.1.0:
-    resolution: {integrity: sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==}
     dev: false
 
   /node-fetch@2.6.11:
