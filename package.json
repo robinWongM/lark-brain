@@ -1,11 +1,14 @@
 {
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "tsx src/qa.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.0.1",
     "@larksuiteoapi/node-sdk": "^1.17.0",
-    "hono": "^3.2.2"
+    "@supabase/supabase-js": "^2.22.0",
+    "hnswlib-node": "^1.4.2",
+    "hono": "^3.2.2",
+    "langchain": "^0.0.82"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.2",
