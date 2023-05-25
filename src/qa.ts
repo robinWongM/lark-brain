@@ -7,7 +7,7 @@ import { supabaseClient } from './supabase';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import { larkClient } from './lark';
-import { Subject, first, reduce, skip, tap, throttleTime } from 'rxjs';
+import { Subject, first, reduce, scan, skip, tap, throttleTime } from 'rxjs';
 
 const questionGeneratorTemplate = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question in Chinese.
 
@@ -81,7 +81,7 @@ export const run = async (question: string, messageId: string) => {
   let chatHistory = '';
 
   answer.pipe(
-    reduce((acc, curr) => acc + curr, ''),
+    scan((acc, curr) => acc + curr, ''),
     throttleTime(250),
     tap((answer) => {
       if (!replyMessageId) {
