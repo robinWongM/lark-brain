@@ -7,7 +7,8 @@
     "@larksuiteoapi/node-sdk": "^1.17.0",
     "@supabase/supabase-js": "^2.22.0",
     "hono": "^3.2.2",
-    "langchain": "^0.0.82"
+    "langchain": "^0.0.82",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.2",

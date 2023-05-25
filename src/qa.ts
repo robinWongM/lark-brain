@@ -7,6 +7,7 @@ import { supabaseClient } from './supabase';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import { larkClient } from './lark';
+import { Subject, first, reduce, skip, tap, throttleTime } from 'rxjs';
 
 const questionGeneratorTemplate = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question in Chinese.
 
@@ -22,17 +23,8 @@ const qaTemplate = `你是一位网管的助手，请使用下面的资料回答
 Q: {question}
 A: `;
 
-function debounce<T extends Function>(cb: T, wait = 20) {
-  let h: NodeJS.Timeout;
-  let callable = (...args: any) => {
-      clearTimeout(h);
-      h = setTimeout(() => cb(...args), wait);
-  };
-  return <T>(<any>callable);
-}
-
 export const run = async (question: string, messageId: string) => {
-  let answer = '';
+  const answer = new Subject<string>();
   let replyMessageId: string | undefined = '';
 
   const debouncedUpdate = debounce(() => {
@@ -78,18 +70,17 @@ export const run = async (question: string, messageId: string) => {
               "elements": [
                 {
                   "tag": "markdown",
-                  "content": answer,
+                  "content": '正在思考中...',
                 }
               ]
             }),
           },
         });
-
+    
         replyMessageId = resp.data?.message_id;
       },
       handleLLMNewToken(token: string) {
-        answer += token;
-        debouncedUpdate();
+        answer.next(token);
       },
     }]
   });
@@ -106,9 +97,34 @@ export const run = async (question: string, messageId: string) => {
   );
 
   chain.questionGeneratorChain = new LLMChain({ prompt: PromptTemplate.fromTemplate(questionGeneratorTemplate), llm: model });
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   let chatHistory = '';
 
+  const updateSub = answer.pipe(
+    reduce((acc, curr) => acc + curr, ''),
+    throttleTime(250),
+    tap((answer) => {
+      if (!replyMessageId) {
+        return;
+      }
+
+      larkClient.im.message.patch({
+        path: {
+          message_id: replyMessageId,
+        },
+        data: {
+          content: JSON.stringify({
+            "elements": [
+              {
+                "tag": "markdown",
+                "content": answer,
+              }
+            ]
+          }),
+        },
+      });
+    }),
+  ).subscribe();
+
   await chain.call({ question, chat_history: chatHistory });
+  updateSub.unsubscribe();
 };
