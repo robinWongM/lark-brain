@@ -47,7 +47,7 @@ app.post('/events', async (c) => {
 
   void dispatcher.invoke(data);
   c.status(200);
-  c.json({ code: 0 });
+  return c.json({ code: 0 });
 })
 
 serve(app)
