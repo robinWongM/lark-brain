@@ -60,6 +60,9 @@ export const run = async (question: string, messageId: string) => {
       handleLLMNewToken(token: string) {
         answer.next(token);
       },
+      handleLLMEnd() {
+        answer.complete();
+      }
     }]
   });
   const model = new ChatOpenAI();
@@ -77,7 +80,7 @@ export const run = async (question: string, messageId: string) => {
   chain.questionGeneratorChain = new LLMChain({ prompt: PromptTemplate.fromTemplate(questionGeneratorTemplate), llm: model });
   let chatHistory = '';
 
-  const updateSub = answer.pipe(
+  answer.pipe(
     reduce((acc, curr) => acc + curr, ''),
     throttleTime(250),
     tap((answer) => {
@@ -104,5 +107,4 @@ export const run = async (question: string, messageId: string) => {
   ).subscribe();
 
   await chain.call({ question, chat_history: chatHistory });
-  updateSub.unsubscribe();
 };
