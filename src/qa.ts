@@ -27,28 +27,6 @@ export const run = async (question: string, messageId: string) => {
   const answer = new Subject<string>();
   let replyMessageId: string | undefined = '';
 
-  const debouncedUpdate = debounce(() => {
-    if (!replyMessageId) {
-      return;
-    }
-
-    larkClient.im.message.patch({
-      path: {
-        message_id: replyMessageId,
-      },
-      data: {
-        content: JSON.stringify({
-          "elements": [
-            {
-              "tag": "markdown",
-              "content": answer,
-            }
-          ]
-        }),
-      },
-    });
-  }, 500);
-
   const vectorStore = await SupabaseVectorStore.fromExistingIndex(new OpenAIEmbeddings(), {
     client: supabaseClient,
     tableName: 'documents',
