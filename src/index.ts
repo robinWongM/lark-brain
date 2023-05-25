@@ -46,9 +46,8 @@ app.post('/events', async (c) => {
     return c.json(challenge);
   }
 
-  
-  const result = await dispatcher.invoke(data);
-  c.json(result);
+  void dispatcher.invoke(data);
+  c.json({});
 })
 
 serve(app)
