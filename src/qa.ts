@@ -84,7 +84,7 @@ export const run = async (question: string, messageId: string) => {
 
   answer.pipe(
     scan((acc, curr) => acc + curr, ''),
-    throttleTime(250),
+    throttleTime(250, undefined, { leading: true, trailing: true }),
     tap((answer) => {
       if (!replyMessageId) {
         return;
