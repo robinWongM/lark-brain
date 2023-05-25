@@ -24,6 +24,8 @@ Q: {question}
 A: `;
 
 export const run = async (question: string, messageId: string) => {
+  console.log(`[${messageId}] Received question: ${question}`);
+
   const answer = new Subject<string>();
   let replyMessageId: string | undefined = '';
 
@@ -106,5 +108,6 @@ export const run = async (question: string, messageId: string) => {
     }),
   ).subscribe();
 
-  await chain.call({ question, chat_history: chatHistory });
+  const finalAnswer = await chain.call({ question, chat_history: chatHistory });
+  console.log(`[${messageId}] Answer: ${finalAnswer.text}`);
 };
