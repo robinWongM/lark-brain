@@ -21,6 +21,8 @@ dispatcher.register({
           msg_type: 'text',
         }
       })
+
+      return;
     }
 
     const content = data.message.content;
