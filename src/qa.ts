@@ -127,7 +127,7 @@ export const run = async (question: string, messageId: string) => {
   ).subscribe();
 
   const finalAnswer = await chain.call({ question, chat_history: chatHistory });
-  updateMessage(messageId, finalAnswer.text, finalAnswer.sourceDocuments.map((doc: any) => ({ title: doc.metadata.title, url: doc.metadata.url })));
+  updateMessage(replyMessageId, finalAnswer.text, finalAnswer.sourceDocuments.map((doc: any) => ({ title: doc.metadata.title, url: doc.metadata.url })));
 
   console.log(`[${messageId}] Answer: ${finalAnswer.text}`);
 };
