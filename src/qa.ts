@@ -7,7 +7,7 @@ import { supabaseClient } from './supabase';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase';
 import { larkClient } from './lark';
-import { Subject, first, reduce, scan, skip, tap, throttleTime } from 'rxjs';
+import { BehaviorSubject, Subject, first, reduce, scan, skip, tap, throttleTime, withLatestFrom } from 'rxjs';
 
 const questionGeneratorTemplate = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question in Chinese.
 
@@ -59,6 +59,7 @@ export const run = async (question: string, messageId: string) => {
   console.log(`[${messageId}] Received question: ${question}`);
 
   const answer = new Subject<string>();
+  const sources = new BehaviorSubject<Source[]>([]);
   let replyMessageId: string | undefined = '';
 
   const vectorStore = await SupabaseVectorStore.fromExistingIndex(new OpenAIEmbeddings(), {
@@ -117,17 +118,20 @@ export const run = async (question: string, messageId: string) => {
   answer.pipe(
     scan((acc, curr) => acc + curr, ''),
     throttleTime(250, undefined, { leading: true, trailing: true }),
-    tap((answer) => {
+    withLatestFrom(sources),
+    tap(([answer, sources]) => {
       if (!replyMessageId) {
         return;
       }
 
-      updateMessage(replyMessageId, answer);
+      updateMessage(replyMessageId, answer, sources);
     }),
   ).subscribe();
 
   const finalAnswer = await chain.call({ question, chat_history: chatHistory });
-  updateMessage(replyMessageId, finalAnswer.text, finalAnswer.sourceDocuments.map((doc: any) => ({ title: doc.metadata.title, url: doc.metadata.url })));
+  
+  sources.next(finalAnswer.sourceDocuments.map((doc: any) => ({ title: doc.metadata.title, url: doc.metadata.url })));
+  sources.complete();
 
   console.log(`[${messageId}] Answer: ${finalAnswer.text}`);
 };
