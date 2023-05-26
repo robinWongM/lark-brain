@@ -23,6 +23,38 @@ const qaTemplate = `你是一位网管的助手，请使用下面的资料回答
 Q: {question}
 A: `;
 
+interface Source {
+  title: string;
+  url: string;
+}
+
+function updateMessage(messageId: string, answer: string, sources: Source[] = []) {
+  larkClient.im.message.patch({
+    path: {
+      message_id: messageId,
+    },
+    data: {
+      content: JSON.stringify({
+        "elements": [
+          {
+            "tag": "markdown",
+            "content": answer,
+          },
+          ...(sources.length ? [
+            {
+              "tag": "hr",
+            },
+            {
+              "tag": "markdown",
+              "content": `引用来源：\n${sources.map(({ title, url }) => `- [${title}](${url})`).join('\n')}`,
+            }
+          ]: [])
+        ]
+      }),
+    },
+  });
+}
+
 export const run = async (question: string, messageId: string) => {
   console.log(`[${messageId}] Received question: ${question}`);
 
@@ -90,24 +122,12 @@ export const run = async (question: string, messageId: string) => {
         return;
       }
 
-      larkClient.im.message.patch({
-        path: {
-          message_id: replyMessageId,
-        },
-        data: {
-          content: JSON.stringify({
-            "elements": [
-              {
-                "tag": "markdown",
-                "content": answer,
-              }
-            ]
-          }),
-        },
-      });
+      updateMessage(replyMessageId, answer);
     }),
   ).subscribe();
 
   const finalAnswer = await chain.call({ question, chat_history: chatHistory });
+  updateMessage(messageId, finalAnswer.text, finalAnswer.sourceDocuments.map((doc: any) => ({ title: doc.metadata.title, url: doc.metadata.url })));
+
   console.log(`[${messageId}] Answer: ${finalAnswer.text}`);
 };
