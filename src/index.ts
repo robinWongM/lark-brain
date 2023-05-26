@@ -9,12 +9,7 @@ app.get('/', (c) => c.text('Hello Hono!'))
 
 dispatcher.register({
   "im.message.receive_v1": (data) => {
-    const content = data.message.content;
-
-    try {
-      const { text } = JSON.parse(content);
-      run(text, data.message.message_id);
-    } catch (e) {
+    if (data.message.message_type !== 'text') {
       larkClient.im.message.reply({
         path: {
           message_id: data.message.message_id,
@@ -27,6 +22,10 @@ dispatcher.register({
         }
       })
     }
+
+    const content = data.message.content;
+    const { text } = JSON.parse(content);
+    run(text, data.message.message_id);
   }
 })
 
